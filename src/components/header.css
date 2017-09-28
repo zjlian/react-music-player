@@ -1,0 +1,14 @@
+.component-header {
+  box-sizing: border-box;
+  padding: 15px 25px;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+.component-header .logo,
+.component-header > .a-logo {
+  max-width: 50px;
+}
+.component-header > .caption {
+  font-size: 20px;
+  text-indent: 20px;
+}

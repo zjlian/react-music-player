@@ -1,0 +1,25 @@
+p { margin: 0 }
+
+.component-musiclist-item {
+  height: 36px;
+  line-height: 36px;
+  border-bottom: 1px solid #ddd;
+  text-indent: 2em;
+  cursor: pointer;
+}
+.component-musiclist-item > .delete {
+  margin-right: 16px;
+  height: 32px;
+  width: 32px;
+  
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position-y: 2px;
+  cursor: pointer;
+}
+.focus {
+  color: #2f9842;
+}
+.component-musiclist-item:hover {
+	background: #eee;
+}

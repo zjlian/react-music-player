@@ -1,0 +1,73 @@
+input[type="range"] {
+  /*box-shadow: 0 1px 0 0px #424242, 0 1px 0 #060607 inset, 0px 2px 10px 0px black inset, 1px 0px 2px rgba(0, 0, 0, 0.4) inset, 0 0px 1px rgba(0, 0, 0, 0.6) inset;
+  */margin-top: 2px;
+  background-color: #999;
+  border-radius: 15px;
+  width: 128px;
+  -webkit-appearance: none;
+  height:10px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: default;
+  top: -5px;
+  height: 30px;
+  width: 20px;
+  transform: translateY(-4px);
+  background: none repeat scroll 0 0 #777;
+  border-radius: 15px;
+  box-shadow: 0 -1px 1px black inset;
+}
+/*---------------------------------------------*/
+
+.player-ui {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-top: 64px;
+}
+
+.player-ui .caption {
+  font-size: 14px;
+  text-decoration: none;
+  color: darkseagreen;
+}
+.controls {
+  margin-top: 64px;
+}
+.controls > .current-progress {
+  margin: 4px;
+  margin-right: 16px;
+  color: grey;
+  font-size: 12px;
+}
+
+.controls > .previous-music,
+.controls > .togglePlay,
+.controls > .next-music {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  margin: 8px;
+
+  cursor: pointer;
+  background-color: lightcoral;
+}
+.controls > .previous-music {
+  margin-left: 0;
+  background: url("../image/prev.png") no-repeat;
+  background-size: 100%;
+}
+.controls > .next-music {
+  background: url("../image/next.png") no-repeat;
+  background-size: 100%;
+}
+.controls > .play {
+  background: url("../image/play.png") no-repeat;
+  background-size: 100%;
+}
+
+.controls > .stop {
+  background: url("../image/stop.png") no-repeat;
+  background-size: 100%;
+}
