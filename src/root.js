@@ -4,18 +4,22 @@ import {IndexRoute,
         hashHistory, 
         Route, 
         Link } from 'react-router';
-
 import Buzz from 'buzz';
+import Pubsub from 'pubsub-js';
+
+import {SimpleKeyValue} from './util.js';
 
 import Header from './components/header.js';
 import Player from './page/player.js';
 import MusicList from './page/musicList.js';
-import MUSIC_LIST from './config.js'
+import MUSIC_LIST from './config.js';
 
 export
 class App extends Component {
   constructor(props) {
     super(props);
+    this.musicTable = new SimpleKeyValue();
+    this.itemTable = new SimpleKeyValue();
     this.state = {
       musicList: MUSIC_LIST,
       musicGroup: null,
@@ -23,39 +27,40 @@ class App extends Component {
       currentPlay: null,
       currentInfo: null
     };
+
     this.musicGroup = new Buzz.group();
     this.buzzList = MUSIC_LIST.map((infos) => {
       let tmp = new Buzz.sound(infos.url);
+      this.musicTable[infos.id] = tmp;
+      this.itemTable[infos.id] = infos;
       this.musicGroup.add(tmp);
       return tmp;
     });
     this.nextMusicHandler = this.nextMusicHandler.bind(this);
-   }
+  }
 
-   nextMusicHandler() {
-    let id = this.state.currentID;
-    //id进一位并对，音乐列表的len取模
-    id = (++id) % MUSIC_LIST.length;
-    this.setState(
-      (prev, props) => {
-        prev.currentPlay.stop();
-        return { currentID: id };
-      },
-      () => {
-        this.updateMusicPlay();
-      }
-    );
-   }
+  nextMusicHandler() {
+  }
 
-   updateMusicPlay() {
+  setMusicPlay(item) {
+    console.log(this);
+    this.state.currentPlay.stop();
+    this.setState({
+      currentID: item.id,
+      currentInfo: item,
+      currentPlay: this.musicTable[item.id]
+    });
+  }
+
+  updateMusicPlay() {
     //console.log(this.musicGroup.getSounds(), this.state.currentID);
-    let music = this.musicGroup.getSounds()[this.state.currentID];
+    let music = this.musicTable[this.state.currentID];
     music.play();
     this.setState({
       currentPlay: music,
-      currentInfo: MUSIC_LIST[this.state.currentID]
+      currentInfo: this.itemTable[this.state.currentID]
     });
-   }
+  }
 
   componentWillMount() {
     this.updateMusicPlay();
@@ -66,13 +71,34 @@ class App extends Component {
 
   componentDidMount() {
     let music = this.state.currentPlay;
-    music.setVolume(60);
-    music.bindOnce('canplay', () => {
-      music.play();
+    music.stop();
+    this.state.musicGroup.setVolume(60);
+
+    Pubsub.subscribe('DELETE_MUSIC', (msg, musicItem) => {
+      this.setState({
+        musicList: this.state.musicList.filter(item => {
+          return item !== musicItem;
+        })
+      });
     });
+
+    Pubsub.subscribe('PLAY_MUSIC', (msg, musicItem) => {
+      const item = this.state.musicList.filter(item => {
+        return item.id === musicItem.id;
+      });
+      console.log(item);
+      if(item.length !== 0) {
+        this.setMusicPlay(item[0]);
+      }
+    });
+    // music.bindOnce('canplay', () => {
+    //   music.play();
+    // });
   }
 
   componentWillUnmount() {
+    Pubsub.unsubscribe('DELETE_MUSIC');
+    Pubsub.unsubscribe('PLAY_MUSIC');
   }
 
   render() {

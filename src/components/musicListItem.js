@@ -9,10 +9,12 @@ import DeleteIcon from '../image/delete.png'
 export default
 class MusicListItem extends Component {
   playMusic(musicItem) {
-
+    Pubsub.publish("PLAY_MUSIC", musicItem);
   }
-  deleteItem(musicItem) {
-    
+  deleteItem(musicItem, e) {
+    console.log(e);
+    e.stopPropagation();
+    Pubsub.publish("DELETE_MUSIC", musicItem);
   }
 
   render() {

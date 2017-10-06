@@ -1,9 +1,4 @@
-//往字符串url后面添加get请求的参数
+function SimpleKV() {};
+SimpleKV.prototype = Object.create(null);
 
-function addUrlParam(url, name, value) {
-  url += (url.indexOf('?') === -1 ? '?' : '&');
-  url += encodeURIComponent(name) + '=' + encodeURIComponent(value);
-  return url;
-}
-
-export default addUrlParam;
+export const SimpleKeyValue = SimpleKV;
