@@ -28,11 +28,13 @@ class Player extends Component {
   }
 
   progressChangeHandler(progress) {
-    let music = this.state.currentPlay;
+    const music = this.state.currentPlay;
     music.setTime(this.state.duration * progress);
-    let classList = this.refs.togglePlay.classList;
-    classList.remove('stop');
-    classList.add('play');
+
+    // let classList = this.refs.togglePlay.classList;
+    // if(classList.contains('stop')) {
+    //   this.togglePlayIcon(music, classList);
+    // }
   }
 
   setVolumeHandler(e) {
@@ -42,15 +44,18 @@ class Player extends Component {
 
   togglePlayHandler(e) {
     let music = this.state.currentPlay;
-    let classList = this.refs.togglePlay.classList;
-    this.togglePlayIcon(music, classList);
     music.togglePlay();
   }
-  togglePlayIcon(music, classList) {
-    classList.toggle('stop');
-    classList.toggle('play');
+  setPlayIcon() {
+    const classList = this.refs.togglePlay.classList;
+    classList.remove('stop');
+    classList.add('play');
   }
-
+  setPauseIcon() {
+    const classList = this.refs.togglePlay.classList;
+    classList.remove('play');
+    classList.add('stop');
+  }
 
   componentDidMount() {
     let music = this.state.currentPlay;
@@ -66,11 +71,22 @@ class Player extends Component {
         time: time,
         percent: percent
       });
+      if(music.isPaused()) {
+        this.setPauseIcon();
+      } else {
+        this.setPlayIcon();
+      }
     });
+    // music.bind('playing', () => {
+    // });
+    // music.bind('pause', () => {
+    // });
   }
 
   componentWillUnmount() {
     this.state.currentPlay.unbind('timeupdate');
+    // this.state.currentPlay.unbind('playing');
+    // this.state.currentPlay.unbind('pause');
   }
 
   render() {
@@ -84,7 +100,7 @@ class Player extends Component {
             cover={this.props.currentInfo.cover} />
             <div className="controls row">
               <span className="previous-music -col-auto"></span>
-              <span className="togglePlay play -col-auto" ref="togglePlay"
+              <span className="togglePlay -col-auto stop" ref="togglePlay"
                     onClick={this.togglePlayHandler}></span>
               <span className="next-music -col-auto"
                     onClick={this.props.onClikcNext}></span>

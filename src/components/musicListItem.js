@@ -12,7 +12,6 @@ class MusicListItem extends Component {
     Pubsub.publish("PLAY_MUSIC", musicItem);
   }
   deleteItem(musicItem, e) {
-    console.log(e);
     e.stopPropagation();
     Pubsub.publish("DELETE_MUSIC", musicItem);
   }

@@ -23,39 +23,50 @@ class App extends Component {
     this.state = {
       musicList: MUSIC_LIST,
       musicGroup: null,
-      currentID: 1,
+      currentID: MUSIC_LIST[0].id,
       currentPlay: null,
       currentInfo: null
     };
 
     this.musicGroup = new Buzz.group();
-    this.buzzList = MUSIC_LIST.map((infos) => {
-      let tmp = new Buzz.sound(infos.url);
-      this.musicTable[infos.id] = tmp;
-      this.itemTable[infos.id] = infos;
+    MUSIC_LIST.map((item) => {
+      let tmp = new Buzz.sound(item.url);
+      this.musicTable[item.id] = tmp;
+      this.itemTable[item.id] = item;
       this.musicGroup.add(tmp);
-      return tmp;
     });
-    this.nextMusicHandler = this.nextMusicHandler.bind(this);
   }
 
-  nextMusicHandler() {
+  getNextItem() {
+    const { musicList, currentInfo } = this.state;
+    const i = musicList.indexOf(currentInfo);
+    const next = (i + 1) % musicList.length;
+    if(i !== -1) {
+      return musicList[next];
+    }
+    return null;
   }
-
+  getPrevItem() {
+    const { musicList, currentInfo } = this.state;
+    const i = musicList.indexOf(currentInfo);
+    const next = i - 1 < 0 ? musicList.length - 1 : i;
+    return musicList[next];
+  }
   setMusicPlay(item) {
-    console.log(this);
+    //先停掉当前播放的音频
     this.state.currentPlay.stop();
     this.setState({
       currentID: item.id,
       currentInfo: item,
       currentPlay: this.musicTable[item.id]
     });
+    this.state.currentPlay.play();
   }
 
+  //这个方法功能重复
   updateMusicPlay() {
     //console.log(this.musicGroup.getSounds(), this.state.currentID);
     let music = this.musicTable[this.state.currentID];
-    music.play();
     this.setState({
       currentPlay: music,
       currentInfo: this.itemTable[this.state.currentID]
@@ -70,30 +81,36 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let music = this.state.currentPlay;
-    music.stop();
     this.state.musicGroup.setVolume(60);
 
     Pubsub.subscribe('DELETE_MUSIC', (msg, musicItem) => {
+      if(musicItem === this.state.currentInfo) {
+        const nexrItem = this.getNextItem();
+        this.setMusicPlay(nexrItem);
+      }
       this.setState({
         musicList: this.state.musicList.filter(item => {
           return item !== musicItem;
         })
       });
+      delete this.itemTable[musicItem.id];
+      delete this.musicTable[musicItem.id];
     });
 
     Pubsub.subscribe('PLAY_MUSIC', (msg, musicItem) => {
       const item = this.state.musicList.filter(item => {
         return item.id === musicItem.id;
       });
-      console.log(item);
-      if(item.length !== 0) {
+
+      if(item.length !== 0 && item[0] !== this.state.currentInfo) {
         this.setMusicPlay(item[0]);
       }
     });
-    // music.bindOnce('canplay', () => {
-    //   music.play();
-    // });
+
+    this.musicGroup.bind('ended', () => {
+      this.setMusicPlay(this.getNextItem());
+      console.log(this.state);
+    });
   }
 
   componentWillUnmount() {
