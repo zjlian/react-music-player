@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Pubsub from 'pubsub-js';
 
 import MusicListItem from '../components/musicListItem.js';
 
@@ -9,9 +8,9 @@ class MusicList extends Component {
     let List = null;
     List = this.props.musicList.map((el) => {
       return (
-        <MusicListItem 
-          key={el.id} 
-          item={el} 
+        <MusicListItem
+          key={el.id}
+          item={el}
           focus={this.props.currentInfo === el}
         />
       );

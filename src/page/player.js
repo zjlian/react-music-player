@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Buzz from 'buzz';
 import { Link } from 'react-router';
+import Pubsub from 'pubsub-js';
 
 import Progress from '../components/progress.js';
 import MusicInfo from '../components/musicInfo.js';
@@ -13,8 +14,8 @@ class Player extends Component {
     super(props);
     this.state = {
       currentPlay: this.props.currentPlay,
-      //当前播放进度的字符串形式 00:20
-      progress: '--:--',
+      //当前播放进度的字符串形式
+      progress: '00:00',
       //当前播放进度的秒数形式
       time: 0,
       //当前播放音频的中长度，数值: 秒数
@@ -28,7 +29,7 @@ class Player extends Component {
   }
 
   progressChangeHandler(progress) {
-    const music = this.state.currentPlay;
+    const music = this.props.currentPlay;
     music.setTime(this.state.duration * progress);
 
     // let classList = this.refs.togglePlay.classList;
@@ -43,7 +44,7 @@ class Player extends Component {
   }
 
   togglePlayHandler(e) {
-    let music = this.state.currentPlay;
+    let music = this.props.currentPlay;
     music.togglePlay();
   }
   setPlayIcon() {
@@ -56,14 +57,20 @@ class Player extends Component {
     classList.remove('play');
     classList.add('stop');
   }
+  nextPlay() {
+    Pubsub.publish('NEXT_PLAY');
+  }
+  prevPlay() {
+    Pubsub.publish('PREV_PLAY');
+  }
 
   componentDidMount() {
-    let music = this.state.currentPlay;
-    music.bind('timeupdate', () => {
-      let time = music.getTime();
-      let duration = music.getDuration();
-      let progress = Buzz.toTimer(music.getTime());
-      let percent = Buzz.toPercent(time, duration, 2);
+    this.props.musicGroup.bind('timeupdate', () => {
+      const music = this.props.currentPlay;
+      const time = music.getTime();
+      const duration = music.getDuration();
+      const progress = Buzz.toTimer(music.getTime());
+      const percent = Buzz.toPercent(time, duration, 2);
 
       this.setState({
         progress: progress,
@@ -84,7 +91,7 @@ class Player extends Component {
   }
 
   componentWillUnmount() {
-    this.state.currentPlay.unbind('timeupdate');
+    this.props.musicGroup.unbind('timeupdate');
     // this.state.currentPlay.unbind('playing');
     // this.state.currentPlay.unbind('pause');
   }
@@ -99,11 +106,12 @@ class Player extends Component {
             singer={this.props.currentInfo.singer}
             cover={this.props.currentInfo.cover} />
             <div className="controls row">
-              <span className="previous-music -col-auto"></span>
+              <span className="previous-music -col-auto"
+                    onClick={this.prevPlay}></span>
               <span className="togglePlay -col-auto stop" ref="togglePlay"
                     onClick={this.togglePlayHandler}></span>
               <span className="next-music -col-auto"
-                    onClick={this.props.onClikcNext}></span>
+                    onClick={this.nextPlay}></span>
               <Progress
               progress={this.state.progress}
               duration={this.state.duration}

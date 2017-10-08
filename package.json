@@ -2,6 +2,7 @@
   "name": "music-player",
   "version": "0.1.0",
   "private": true,
+  "homepage":".",
   "dependencies": {
     "buzz": "^1.2.0",
     "history": "^4.7.2",

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {IndexRoute,
-        Router, 
-        hashHistory, 
-        Route, 
+        Router,
+        hashHistory,
+        Route,
         Link } from 'react-router';
 import Buzz from 'buzz';
 import Pubsub from 'pubsub-js';
@@ -37,30 +37,36 @@ class App extends Component {
     });
   }
 
-  getNextItem() {
+  getNextItem(type = 'next') {
     const { musicList, currentInfo } = this.state;
     const i = musicList.indexOf(currentInfo);
-    const next = (i + 1) % musicList.length;
-    if(i !== -1) {
-      return musicList[next];
+    let next = '';
+
+    if(type === 'next') {
+      next = (i + 1) % musicList.length;
+    } else if(type === 'prev') {
+      next = i - 1 < 0 ? musicList.length - 1 : i - 1;
     }
-    return null;
+
+    if(i !== -1)
+      return musicList[next];
+
+    throw new Error('意外的错误');
   }
-  getPrevItem() {
-    const { musicList, currentInfo } = this.state;
-    const i = musicList.indexOf(currentInfo);
-    const next = i - 1 < 0 ? musicList.length - 1 : i;
-    return musicList[next];
-  }
+
   setMusicPlay(item) {
     //先停掉当前播放的音频
     this.state.currentPlay.stop();
+
+    function cb(that) {
+      that.state.currentPlay.play();
+    }
+
     this.setState({
       currentID: item.id,
       currentInfo: item,
       currentPlay: this.musicTable[item.id]
-    });
-    this.state.currentPlay.play();
+    }, cb.bind(this, this));
   }
 
   //这个方法功能重复
@@ -107,22 +113,34 @@ class App extends Component {
       }
     });
 
+    Pubsub.subscribe('NEXT_PLAY', (msg) => {
+      const item = this.getNextItem();
+      this.setMusicPlay(item);
+    });
+    Pubsub.subscribe('PREV_PLAY', (msg) => {
+      const item = this.getNextItem('prev');
+      this.setMusicPlay(item);
+    });
+
     this.musicGroup.bind('ended', () => {
-      this.setMusicPlay(this.getNextItem());
-      console.log(this.state);
+      const item = this.getNextItem();
+      this.setMusicPlay(item);
     });
   }
 
   componentWillUnmount() {
     Pubsub.unsubscribe('DELETE_MUSIC');
     Pubsub.unsubscribe('PLAY_MUSIC');
+    Pubsub.unsubscribe('NEXT_PLAY');
+    Pubsub.unsubscribe('PREV_PLAY');
+    this.musicGroup.unbind('ended');
   }
 
   render() {
     return (
       <div>
         <Header />
-        {this.props.children && React.cloneElement(this.props.children, this.state)}
+        {React.cloneElement(this.props.children, this.state)}
       </div>
     );
   }
@@ -143,6 +161,7 @@ class App extends Component {
 export default
 class Root extends Component {
   render() {
+    console.log('root update');
     return (
       <Router history={hashHistory}>
         <Route path="/" component={App}>

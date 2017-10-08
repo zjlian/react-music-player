@@ -1,9 +1,9 @@
 const MUSIC_LIST = [
   {
     id: 1,
-    title: '光荣',
-    singer: 'bobo',
-    url: 'http://other.web.ra01.sycdn.kuwo.cn/resource/n3/128/12/57/1761230401.mp3',
+    title: '给自己的歌(Live)',
+    singer: '纵贯线',
+    url: 'http://other.web.rc01.sycdn.kuwo.cn/resource/n3/1/83/3396297137.mp3',
     cover: null
   },
   {
@@ -15,9 +15,9 @@ const MUSIC_LIST = [
   },
   {
     id: 3,
-    title: '悟空',
-    singer: '戴荃',
-    url: 'http://other.web.rn01.sycdn.kuwo.cn/resource/n2/91/86/2699845406.mp3',
+    title: 'Voodoo Kingdom',
+    singer: `SOUL'D OUT`,
+    url: 'http://other.web.rh01.sycdn.kuwo.cn/resource/n1/46/7/4233536188.mp3',
     cover: null
   }
 ];
