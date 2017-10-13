@@ -84,16 +84,10 @@ class Player extends Component {
         this.setPlayIcon();
       }
     });
-    // music.bind('playing', () => {
-    // });
-    // music.bind('pause', () => {
-    // });
   }
 
   componentWillUnmount() {
     this.props.musicGroup.unbind('timeupdate');
-    // this.state.currentPlay.unbind('playing');
-    // this.state.currentPlay.unbind('pause');
   }
 
   render() {
@@ -102,9 +96,9 @@ class Player extends Component {
         <div className="player-ui">
           <Link to="/list" className="caption">播放列表 &gt;</Link>
           <MusicInfo 
-            title={this.props.currentInfo.title}
+            name={this.props.currentInfo.title}
             singer={this.props.currentInfo.singer}
-            cover={this.props.currentInfo.cover} />
+            artistPic={this.props.currentInfo.cover} />
             <div className="controls row">
               <span className="previous-music -col-auto"
                     onClick={this.prevPlay}></span>

@@ -161,7 +161,6 @@ class App extends Component {
 export default
 class Root extends Component {
   render() {
-    console.log('root update');
     return (
       <Router history={hashHistory}>
         <Route path="/" component={App}>

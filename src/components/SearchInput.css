@@ -1,0 +1,26 @@
+.SearchInput {
+  margin-top: 10px;
+}
+.SearchInput input {
+  box-sizing: border-box;
+  height: 26px;
+  width: 210px;
+
+  padding: 5px 15px;
+  border-radius: 15px;
+  border: 1px solid #A0A0A0;
+  color: gray;
+  font-size: 12px;
+}
+
+.SearchInput > .searchBtn {
+  float: right;
+  width: 24px;
+  height: 24px;
+  margin-left: 2px;
+  margin-top: 1px;
+
+  cursor: pointer;
+  background-image: url("../image/sreach.png");
+  background-size: 100%;
+}

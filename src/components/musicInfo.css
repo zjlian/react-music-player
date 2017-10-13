@@ -9,10 +9,13 @@
   font-weight: lighter;
   color: grey;
 }
+.music-info > .info-text .special {
+  padding-left: 16px;
+  color: #747474;
+}
 .music-info > .music-cover {
   width: 192px;
   height: 192px;
-
 
   box-shadow: -1px -1px 4px  rgba(137, 134, 139, 0.1),
               2px 2px 8px rgba(137, 134, 139, 0.8);
@@ -21,3 +24,4 @@
   background-repeat: no-repeat;
   background-size: 100%; 
 }
+
