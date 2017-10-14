@@ -8,32 +8,38 @@ import DeleteIcon from '../image/delete.png'
 
 export default
 class MusicListItem extends Component {
-  playMusic(musicItem) {
-    Pubsub.publish("PLAY_MUSIC", musicItem);
-  }
+  // clickHandler(musicItem) {
+  //   Pubsub.publish("PLAY_MUSIC", musicItem);
+  // }
   deleteItem(musicItem, e) {
     e.stopPropagation();
     Pubsub.publish("DELETE_MUSIC", musicItem);
   }
 
   render() {
-    let item = this.props.item;
+    const item = this.props.item;
+    const canNotDelete = this.props.canNotDelete;
+    const DeleteBtn = !!canNotDelete ? null : (
+      <p
+        className="-col-auto delete"
+        onClick={this.deleteItem.bind(this, item)}
+        style={{backgroundImage: `url(${DeleteIcon})`}}
+      ></p>
+    );
+    
     return (
       <li
         className={`component-musiclist-item row ${this.props.focus ? 'focus' : ''}`}
-        onClick={this.playMusic.bind(this, item)}
+        onClick={this.props.clickHandler}
       >
         <p>
-          {item.title} -
+          {item.name} -
           <span style={{fontWeight: 'lighter', fontSize: '.8em', marginLeft: '.5em'}}>
-            {item.singer}
+            {item.singer} - 
+            {item.special || "未知专辑"}
           </span>
         </p>
-        <p
-          className="-col-auto delete"
-          onClick={this.deleteItem.bind(this, item)}
-          style={{backgroundImage: `url(${DeleteIcon})`}}
-        ></p>
+        {DeleteBtn}
       </li>
     );
   }
