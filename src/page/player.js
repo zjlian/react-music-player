@@ -96,9 +96,11 @@ class Player extends Component {
         <div className="player-ui">
           <Link to="/list" className="caption">播放列表 &gt;</Link>
           <MusicInfo 
-            name={this.props.currentInfo.title}
+            name={this.props.currentInfo.name}
             singer={this.props.currentInfo.singer}
-            artistPic={this.props.currentInfo.cover} />
+            special={this.props.currentInfo.special}
+            artistPic={this.props.currentInfo.cover}
+          />
             <div className="controls row">
               <span className="previous-music -col-auto"
                     onClick={this.prevPlay}></span>

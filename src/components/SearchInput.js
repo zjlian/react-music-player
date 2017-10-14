@@ -11,19 +11,34 @@ class SearchInput extends Component {
       value: ""
     };
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.enterHandler = this.enterHandler.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
   }
 
   inputChangeHandler(e) {
-    let str = e.target.value;
     this.setState({
-      value: str
+      value: e.target.value
     });
   }
-  enterHandler(e) {
-    if(e.keyCode === 13) {
-      console.log(this.state.value);
+  searchHandler(e) {
+    if((e.keyCode === 13 || e.type === 'click') && this.state.value !== "") {
+      this.search(this.state.value);
     }
+  }
+
+
+  search(str) {
+    const xhr = new XMLHttpRequest();
+    const url = `http://localhost/api/naivemusic.php?&name=${str}`;
+
+    xhr.open("GET", url, true);
+    xhr.send();
+
+    xhr.onreadystatechange = () => {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        const musicItems = JSON.parse(xhr.responseText);
+        Pubsub.publish('DID_SEARCH', musicItems);
+      }
+    };
   }
 
   render() {
@@ -33,11 +48,11 @@ class SearchInput extends Component {
          type="text" placeholder="搜索音乐"
          value={this.state.value}
          onChange={this.inputChangeHandler}
-         onKeyUp={this.enterHandler}
+         onKeyDown={this.searchHandler}
         />
         <span
          className="searchBtn"
-         onClick={null}
+         onClick={this.searchHandler}
         ></span>
       </div>
     );
