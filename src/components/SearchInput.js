@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Pubsub from 'pubsub-js';
+import {SimpleKeyValue} from '../util.js';
 
 import './SearchInput.css';
 
@@ -7,6 +8,7 @@ export default
 class SearchInput extends Component {
   constructor(props) {
     super(props);
+    this.history = new SimpleKeyValue();
     this.state = {
       value: ""
     };
@@ -27,6 +29,10 @@ class SearchInput extends Component {
 
 
   search(str) {
+    if(!!this.history[str]) {
+      Pubsub.publish('DID_SEARCH', this.history[str]);
+      return;
+    }
     const xhr = new XMLHttpRequest();
     const url = `http://localhost/api/naivemusic.php?&name=${str}`;
 
@@ -34,8 +40,13 @@ class SearchInput extends Component {
     xhr.send();
 
     xhr.onreadystatechange = () => {
+      if(xhr.readyState === 0) {
+        window.location.hash = '/search';
+      }
       if(xhr.readyState === 4 && xhr.status === 200) {
         const musicItems = JSON.parse(xhr.responseText);
+        //缓存搜索结果
+        this.history[str] = musicItems;
         Pubsub.publish('DID_SEARCH', musicItems);
       }
     };

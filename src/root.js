@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {IndexRoute,
         Router,
         hashHistory,
-        Route,
-        Link } from 'react-router';
+        Route } from 'react-router';
 import Buzz from 'buzz';
 import Pubsub from 'pubsub-js';
 
@@ -38,6 +37,7 @@ class App extends Component {
       this.musicTable.set(item, tmp);
       this.itemTable[item.id] = item;
       this.musicGroup.add(tmp);
+      return true;
     });
   }
 
@@ -64,26 +64,21 @@ class App extends Component {
       this.state.currentPlay.stop();
     }
 
-    function cb(that) {
+    function func(that) {
       that.state.currentPlay.play();
+
+      that.state.currentPlay.bindOnce('ended', () => {
+        const item = this.getNextItem();
+        that.setMusicPlay(item);
+      });
     }
 
     this.setState({
       currentID: item.id,
       currentInfo: item,
       currentPlay: this.musicTable.get(item)
-    }, cb.bind(this, this));
+    }, func.bind(this, this));
   }
-
-  //这个方法功能重复
-  // updateMusicPlay() {
-  //   //console.log(this.musicGroup.getSounds(), this.state.currentID);
-  //   let music = this.musicTable.get(this.state.currentInfo);
-  //   this.setState({
-  //     currentPlay: music,
-  //     currentInfo: this.itemTable[this.state.currentID]
-  //   });
-  // }
 
   componentWillMount() {
     this.setMusicPlay(this.itemTable[this.state.currentID]);
@@ -137,7 +132,8 @@ class App extends Component {
         let musicList = Array.from(prevState.musicList);
         musicList.push(musicItem);
         return {
-          musicList: musicList
+          musicList: musicList,
+          musicGroup: this.musicGroup
         }
       });
       this.itemTable[musicItem.id] = musicItem;
@@ -151,11 +147,11 @@ class App extends Component {
         searchReaultList: items
       });
     });
-
-    this.musicGroup.bind('ended', () => {
-      const item = this.getNextItem();
-      this.setMusicPlay(item);
-    });
+    //该事件改成了：每次调用setMusicPlay()时，给即将播放的音频对象绑定一次性事件
+    // this.state.musicGroup.bind('ended', () => {
+    //   const item = this.getNextItem();
+    //   this.setMusicPlay(item);
+    // });
   }
 
   componentWillUnmount() {
@@ -165,7 +161,7 @@ class App extends Component {
     Pubsub.unsubscribe('PREV_PLAY');
     Pubsub.unsubscribe('ADD_MUSIC');
     Pubsub.unsubscribe('DID_SEARCH');
-    this.musicGroup.unbind('ended');
+    //this.state.musicGroup.unbind('ended');
   }
 
   render() {
@@ -178,18 +174,6 @@ class App extends Component {
   }
 }
 
-          {/* <Player
-            musicGroup={this.musicGroup}
-            currentPlay={this.state.currentPlay}
-            musicInfo={this.state.currentInfo}
-            onClikcNext={this.nextMusicHandler}
-          /> */}
-          {/* <MusicList
-            currentPlayItem={this.state.currentInfo}
-            musicList={this.state.musicList}
-          ></MusicList> */}
-
-// history={hashHistory}
 export default
 class Root extends Component {
   render() {

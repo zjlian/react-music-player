@@ -1,24 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import './musicInfo.css';
 
-
-// class MusicInfo extends Component {
-//   render() {
-//     return (
-//       <div className="music-info row">
-//         <div className="info-text">
-//           <h2 className="music-title">{this.props.title}</h2>
-//           <h5 className="music-singer">{this.props.singer}</h5>
-//         </div>
-//         <div
-//           className="music-cover -col-auto"
-//           style={{
-//             backgroundImage: `url(${this.props.cover})`
-//           }}></div>
-//       </div>
-//     );
-//   }
-// }
 export default
 function MusicInfo(props) {
   return (

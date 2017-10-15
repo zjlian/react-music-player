@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Pubsub from 'pubsub-js';
 import MusicListItem from '../components/musicListItem.js';
 
