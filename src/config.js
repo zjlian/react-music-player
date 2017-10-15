@@ -1,4 +1,9 @@
-const MUSIC_LIST = [
+//搜索功能请求发起的服务器地址
+export const SERVER_ADDRESS = 'http://localhost/api/naivemusic.php';
+//export const SERVER_PORT = '';
+
+//默认播放列表
+export const MUSIC_LIST = [
   {
     id: 1,
     name: '给自己的歌(Live)',
@@ -9,18 +14,16 @@ const MUSIC_LIST = [
   },
   {
     id: 2,
-    name: '孑燃妒火',
-    singer: '96猫',
-    url: 'http://other.web.rh01.sycdn.kuwo.cn/resource/n2/61/35/189498895.mp3',
+    name: '匆匆 (Live)',
+    singer: '李宗盛，李剑青',
+    url: 'http://other.web.rp01.sycdn.kuwo.cn/resource/n1/86/61/788608379.mp3',
     cover: null
   },
   {
     id: 3,
     name: 'Voodoo Kingdom',
-    singer: `SOUL'D OUT`,
+    singer: `SOUL'd OUT`,
     url: 'http://other.web.rh01.sycdn.kuwo.cn/resource/n1/46/7/4233536188.mp3',
     cover: null
   }
 ];
-
-export default MUSIC_LIST;

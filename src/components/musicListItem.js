@@ -33,7 +33,7 @@ class MusicListItem extends Component {
         onClick={this.props.clickHandler}
       >
         <p>
-          {item.name} -
+          <span >{item.name}</span> -
           <span style={{fontWeight: 'lighter', fontSize: '.8em', marginLeft: '.5em'}}>
             {item.singer} - 
             {item.special || "未知专辑"}

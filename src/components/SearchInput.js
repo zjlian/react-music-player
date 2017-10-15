@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Pubsub from 'pubsub-js';
 import {SimpleKeyValue} from '../util.js';
+import {SERVER_ADDRESS} from '../config.js';
 
 import './SearchInput.css';
 
@@ -34,7 +35,7 @@ class SearchInput extends Component {
       return;
     }
     const xhr = new XMLHttpRequest();
-    const url = `http://localhost/api/naivemusic.php?&name=${str}`;
+    const url = `${SERVER_ADDRESS}?&name=${str}`;
 
     xhr.open("GET", url, true);
     xhr.send();

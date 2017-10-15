@@ -12,7 +12,7 @@ import Header from './components/header.js';
 import Player from './page/player.js';
 import MusicList from './page/musicList.js';
 import SearchList from './page/searchList.js'
-import MUSIC_LIST from './config.js';
+import {MUSIC_LIST} from './config.js';
 
 export
 class App extends Component {
@@ -143,8 +143,13 @@ class App extends Component {
 
     Pubsub.subscribe('DID_SEARCH', (msg, items) => {
       window.location.hash = '/search';
+      //音乐数据处理
+      const tmpItems = items.map((item) => {
+        item.name = item.name.length > 32 ? item.name.substring(0, 32) + '...' : item.name;
+        return item;
+      });
       this.setState({
-        searchReaultList: items
+        searchReaultList: tmpItems
       });
     });
     //该事件改成了：每次调用setMusicPlay()时，给即将播放的音频对象绑定一次性事件
